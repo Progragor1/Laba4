@@ -30,10 +30,11 @@
 
 #### OR
 ![0](https://user-images.githubusercontent.com/91984484/202422116-a57c09df-4144-4a1c-bc2a-4059ae265984.jpg)
+![1](https://user-images.githubusercontent.com/91984484/202422180-643ca7ed-c913-47f4-a70e-05c9911cd28d.jpg)
 
 #### Перцептрон обучается быстро. За 4 эпохи корректность минимизирует ошибки до 0 и работает корректно.
 #### AND
-![1](https://user-images.githubusercontent.com/91984484/202422180-643ca7ed-c913-47f4-a70e-05c9911cd28d.jpg)
+![AND](https://user-images.githubusercontent.com/91984484/202424931-cb50f837-dda0-4b74-b7a6-3e59371e70be.jpg)
 
 #### Перцептрон обучается дольше предыдущего, а именно за 8 эпох начинает работать корректно.
 #### NAND
@@ -45,78 +46,27 @@
 
 #### Так как перцептрон работает только с линейно разделимыми объектами, он не способен решить данную логическую задачу, потому что для её решения потребуется разделить данные двумя линиями. Перцептрон на это не способен, и при повышении количества тренировок TOTAL ERROR становиться равным 4 и работает не корректно. 
 ## Задание 2
-### Подробно опишите каждую строку файла конфигурации нейронной сети, доступного в папке с файлами проекта по ссылке. Самостоятельно найдите информацию о компонентах Decision Requester, Behavior Parameters, добавленных на сфере.
-```py
-// Подключаем необходимые библиотеки
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Unity.MLAgents;
-using Unity.MLAgents.Sensors;
-using Unity.MLAgents.Actuators;
+### Построить графики зависимости количества эпох от ошибки обучения. Указать от чего зависит необходимое количество эпох обучения.
+#### OR
+![Chart](https://user-images.githubusercontent.com/91984484/202425950-27acf2b8-dd5f-4ad2-940e-f58ec10f079e.jpg)
+#### AND 
+![Chart (1)](https://user-images.githubusercontent.com/91984484/202425994-bdaded7e-ff84-4ef4-8f44-db710a41bd8b.jpg)
+#### NAND
+![Chart (2)](https://user-images.githubusercontent.com/91984484/202426031-eaf7e228-08f5-43be-b6fa-0a8c39573fdb.jpg)
+#### XOR
+![Chart (3)](https://user-images.githubusercontent.com/91984484/202426058-3515dba4-6127-4d5e-b96f-e38925382220.jpg)
 
-public class RollerAgent : Agent
-{
-    Rigidbody rBody; // создаем переменную типа Rigitbody
-    void Start()
-    {
-        rBody = GetComponent<Rigidbody>();  // присваеваем значение фактического компонента, обеспечивающего физическое взаимодействие между объектами
-    // Start вызывается перед первым обновлением кадра
-    }
-
-    public Transform Target; // создаем объект куб
-    public override void OnEpisodeBegin()
-    {
-        if (this.transform.localPosition.y < 0) // если координата y объекта меньше 0, то
-        {
-            this.rBody.angularVelocity = Vector3.zero; //задаем скорость поворота
-            this.rBody.velocity = Vector3.zero; // задаем направление движения тела
-            this.transform.localPosition = new Vector3(0, 0.5f, 0); // задаем координаты объекта
-        }
-
-        Target.localPosition = new Vector3(Random.value * 8-4, 0.5f, Random.value * 8-4);// перемещаем объект в случайное место
-    }
-    public override void CollectObservations(VectorSensor sensor)
-    {
-        sensor.AddObservation(Target.localPosition); //добавляет в вектор наблюдения положение объекта
-        sensor.AddObservation(this.transform.localPosition); // добавляет в вектор наблюдения положение перемещенного объекта
-        sensor.AddObservation(rBody.velocity.x); // добавляет в вектор наблюдения координату x
-        sensor.AddObservation(rBody.velocity.z); // добавляет в вектор наблюдения координату y
-    }
-    public float forceMultiplier = 10; // создаем множитель силы
-    public override void OnActionReceived(ActionBuffers actionBuffers)
-    {
-        Vector3 controlSignal = Vector3.zero; // направление силы
-        controlSignal.x = actionBuffers.ContinuousActions[0]; // начало непрерывных действий по координате x
-        controlSignal.z = actionBuffers.ContinuousActions[1]; // начало непрерывных действий по координате y
-        rBody.AddForce(controlSignal * forceMultiplier); // примененяем физическую силу к объекту
-
-        float distanceToTarget = Vector3.Distance(this.transform.localPosition, Target.localPosition); // расстояние до куба
-
-        if(distanceToTarget < 1.42f) // если дистанция до объекта меньше 1.42, то
-        {
-            SetReward(1.0f); // изменяем вознаграждение за эпизод 
-            EndEpisode(); // заканчиваем эпизод
-        }
-        else if (this.transform.localPosition.y < 0)// если координата y объекта меньше 0, то
-        {
-            EndEpisode(); // заканчиваем эпизод
-        }
-    }
-}
-
-```
-
+#### Количество эпох обучения зависит от сложности логической задачи!
 ## Задание 3
 ### Доработайте сцену и обучите ML-Agent таким образом, чтобы шар перемещался между двумя кубами разного цвета. Кубы должны, как и в первом задании, случайно изменять координаты на плоскости. В выводах к работе дайте развернутый ответ, что такое игровой баланс и как системы машинного обучения могут быть использованы для того, чтобы его скорректировать.
 
 
 ## Выводы
 ### В результате работы:
-#### - Реализовал систему машиного обучения в связке Python - Google-Sheets - Unity.
-#### - Посмотрел, как обучается модель
-#### - Проанализировал программный код, который способствовал обучению модели
-#### - Изучил информацию о компонентах Decision Requester, Behavior Parameters
+#### - Познакомился с перцептроном
+#### - Обучил перцептрон решать логические задачи
+#### - Составил зависимость количества эпох от ошибки обучения
+#### - Понял от чего зависит количество эпох обучения
 
 
 
